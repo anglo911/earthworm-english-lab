@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Earthworm English Lab</title>
+    <meta name="description" content="基于 Earthworm 思路打造的英语学习站：连词造句、词汇跟读、小测验。" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <h1>🐛 Earthworm English Lab</h1>
+      <p>把英语“练出来”：连词造句 + 词汇跟读 + 即时测验</p>
+      <div class="badge-row">
+        <span class="badge">Inspired by cuixueshe/earthworm</span>
+        <span class="badge">Static · GitHub Pages Ready</span>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>1) 连词造句训练（Conjunction Builder）</h2>
+        <p>先选前半句，再选连词，再选后半句，拼成更自然的英语句子。</p>
+
+        <div class="grid3">
+          <label>
+            前半句
+            <select id="leftClause"></select>
+          </label>
+          <label>
+            连词
+            <select id="conjunction"></select>
+          </label>
+          <label>
+            后半句
+            <select id="rightClause"></select>
+          </label>
+        </div>
+
+        <div class="result" id="sentenceResult">Your sentence will appear here.</div>
+        <div class="actions">
+          <button id="buildBtn">生成句子</button>
+          <button id="speakSentenceBtn" class="secondary">🔊 朗读句子</button>
+          <button id="speakSentenceSlowBtn" class="secondary">🐢 慢速朗读</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2) 单词区（Vocabulary + 跟读）</h2>
+        <p>点击单词听发音；慢速模式适合跟读。</p>
+        <div id="vocabList" class="vocab-list"></div>
+      </section>
+
+      <section class="card">
+        <h2>3) 5题小测（Quick Quiz）</h2>
+        <p>每次随机5题，提交后立即评分。</p>
+        <div id="quizBox"></div>
+        <div class="actions">
+          <button id="submitQuizBtn">提交评分</button>
+          <button id="regenQuizBtn" class="secondary">换一组题</button>
+        </div>
+        <div class="result" id="quizResult">Ready.</div>
+      </section>
+    </main>
+
+    <footer>
+      <small>
+        Built for <strong>anglo911</strong> · Powered by static HTML/CSS/JS ·
+        <a href="https://github.com/cuixueshe/earthworm" target="_blank" rel="noreferrer">Earthworm Source</a>
+      </small>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
