@@ -1,133 +1,173 @@
-const leftClauses = [
-  "I want to improve my English",
-  "She practices speaking every day",
-  "We can learn faster",
-  "He was tired",
-  "They kept trying",
+const words = [
+  { w: "habit", p: "/ˈhæbɪt/", zh: "习惯", ex: "Reading daily is a good habit.", lv: "A1" },
+  { w: "review", p: "/rɪˈvjuː/", zh: "复习", ex: "I review words every night.", lv: "A1" },
+  { w: "improve", p: "/ɪmˈpruːv/", zh: "提高", ex: "Practice helps you improve.", lv: "A1" },
+  { w: "sentence", p: "/ˈsentəns/", zh: "句子", ex: "Make a sentence with the word.", lv: "A1" },
+  { w: "memory", p: "/ˈmeməri/", zh: "记忆", ex: "Pictures help my memory.", lv: "A2" },
+  { w: "context", p: "/ˈkɒntekst/", zh: "语境", ex: "Learn words in context.", lv: "A2" },
+  { w: "pronunciation", p: "/prəˌnʌnsiˈeɪʃən/", zh: "发音", ex: "Your pronunciation is clear.", lv: "A2" },
+  { w: "fluency", p: "/ˈfluːənsi/", zh: "流利度", ex: "Fluency comes with practice.", lv: "A2" },
+  { w: "accurate", p: "/ˈækjərət/", zh: "准确的", ex: "Try to be accurate first.", lv: "B1" },
+  { w: "mistake", p: "/mɪˈsteɪk/", zh: "错误", ex: "Every mistake is a chance to learn.", lv: "A1" },
+  { w: "confident", p: "/ˈkɒnfɪdənt/", zh: "自信的", ex: "She sounds confident in class.", lv: "A2" },
+  { w: "progress", p: "/ˈprəʊɡres/", zh: "进步", ex: "Small steps make progress.", lv: "A1" },
+  { w: "conjunction", p: "/kənˈdʒʌŋkʃən/", zh: "连词", ex: "Because is a conjunction.", lv: "B1" },
+  { w: "similar", p: "/ˈsɪmələ(r)/", zh: "相似的", ex: "These two words are similar.", lv: "A2" },
+  { w: "instead", p: "/ɪnˈsted/", zh: "代替；而不是", ex: "Use a noun instead.", lv: "A2" },
+  { w: "repeat", p: "/rɪˈpiːt/", zh: "重复", ex: "Repeat after me.", lv: "A1" },
+  { w: "focus", p: "/ˈfəʊkəs/", zh: "专注", ex: "Focus on high-frequency words.", lv: "A2" },
+  { w: "challenge", p: "/ˈtʃælɪndʒ/", zh: "挑战", ex: "Take a 7-day word challenge.", lv: "B1" },
+  { w: "essential", p: "/ɪˈsenʃl/", zh: "必需的", ex: "Sleep is essential for memory.", lv: "B1" },
+  { w: "strategy", p: "/ˈstrætədʒi/", zh: "策略", ex: "Find your own study strategy.", lv: "B1" },
 ];
 
-const conjunctions = ["because", "although", "so", "if", "when", "while"];
-
-const rightClauses = [
-  "she still joined the discussion",
-  "we use short daily sessions",
-  "he continued reading aloud",
-  "you review new words at night",
-  "they made clear progress",
-  "it feels more natural",
-];
-
-const vocab = [
-  { word: "conjunction", phonetic: "/kənˈdʒʌŋkʃən/", meaning: "连词" },
-  { word: "practice", phonetic: "/ˈpræktɪs/", meaning: "练习" },
-  { word: "pronunciation", phonetic: "/prəˌnʌnsiˈeɪʃən/", meaning: "发音" },
-  { word: "fluency", phonetic: "/ˈfluːənsi/", meaning: "流利度" },
-  { word: "sentence", phonetic: "/ˈsentəns/", meaning: "句子" },
-  { word: "review", phonetic: "/rɪˈvjuː/", meaning: "复习" },
-  { word: "confidence", phonetic: "/ˈkɒnfɪdəns/", meaning: "自信" },
-  { word: "improve", phonetic: "/ɪmˈpruːv/", meaning: "提高" },
-];
-
-const quizBank = [
-  { q: "Choose the best conjunction: I was tired, ___ I finished my homework.", options: ["but", "because", "if"], ans: "but" },
-  { q: "Which word means '发音' ?", options: ["pronunciation", "fluency", "sentence"], ans: "pronunciation" },
-  { q: "Fill in: If you practice daily, you ___ improve.", options: ["will", "were", "did"], ans: "will" },
-  { q: "Choose the better sentence:", options: ["She practice every day.", "She practices every day.", "She practicing every day."], ans: "She practices every day." },
-  { q: "Which word is closest to 'review'?", options: ["forget", "revisit", "avoid"], ans: "revisit" },
-  { q: "Choose the best conjunction: ___ it rains, we will stay home.", options: ["If", "Because", "Although"], ans: "If" },
-  { q: "'Fluency' means:", options: ["speed only", "smooth and accurate speaking", "loud speaking"], ans: "smooth and accurate speaking" },
-];
-
-function fillSelect(id, list) {
-  const el = document.getElementById(id);
-  el.innerHTML = list.map(v => `<option value="${v}">${v}</option>`).join("");
-}
+const state = {
+  todayTries: 0,
+  todayCorrect: 0,
+  currentQuizWord: null,
+  wrongBook: JSON.parse(localStorage.getItem("wrongBook") || "[]"),
+};
 
 function speak(text, rate = 1) {
   if (!window.speechSynthesis) {
-    alert("当前浏览器不支持语音播放（SpeechSynthesis）。");
+    alert("当前浏览器不支持语音播放");
     return;
   }
   window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = "en-US";
-  utter.rate = rate;
-  window.speechSynthesis.speak(utter);
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  u.rate = rate;
+  window.speechSynthesis.speak(u);
 }
 
-function buildSentence() {
-  const left = document.getElementById("leftClause").value;
-  const conj = document.getElementById("conjunction").value;
-  const right = document.getElementById("rightClause").value;
-  let sentence = `${left} ${conj} ${right}.`;
-  sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
-  document.getElementById("sentenceResult").textContent = sentence;
+function saveWrongBook() {
+  localStorage.setItem("wrongBook", JSON.stringify(state.wrongBook));
 }
 
-function renderVocab() {
-  const box = document.getElementById("vocabList");
-  box.innerHTML = vocab.map(v => `
-    <div class="vocab-item">
-      <div class="vocab-main">
-        <b>${v.word}</b> <small>${v.phonetic}</small><br/>
-        <small>${v.meaning}</small>
-      </div>
-      <div class="vocab-actions">
-        <button class="secondary" onclick="speak('${v.word}', 1)">🔊</button>
-        <button class="secondary" onclick="speak('${v.word}', 0.7)">🐢</button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function pickRandom(arr, n) {
-  const a = [...arr];
-  const out = [];
-  while (out.length < n && a.length) {
-    const idx = Math.floor(Math.random() * a.length);
-    out.push(a.splice(idx, 1)[0]);
+function addWrong(wordObj) {
+  if (!state.wrongBook.find(x => x.w === wordObj.w)) {
+    state.wrongBook.push(wordObj);
+    saveWrongBook();
   }
-  return out;
+  renderWrongBook();
+  renderStats();
 }
 
-let currentQuiz = [];
+function removeWrong(word) {
+  state.wrongBook = state.wrongBook.filter(x => x.w !== word);
+  saveWrongBook();
+  renderWrongBook();
+  renderStats();
+}
 
-function renderQuiz() {
-  currentQuiz = pickRandom(quizBank, 5);
-  const box = document.getElementById("quizBox");
-  box.innerHTML = currentQuiz.map((item, i) => `
-    <div class="quiz-q">
-      <div><strong>Q${i + 1}.</strong> ${item.q}</div>
-      ${item.options.map(op => `
-        <label>
-          <input type="radio" name="q${i}" value="${op}"> ${op}
-        </label>
-      `).join("")}
+function renderWords() {
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  const lv = document.getElementById("levelFilter").value;
+  const list = words.filter(x => {
+    const hit = x.w.toLowerCase().includes(q) || x.zh.includes(q);
+    const lvHit = lv === "all" || x.lv === lv;
+    return hit && lvHit;
+  });
+
+  const box = document.getElementById("wordList");
+  box.innerHTML = list.map(x => `
+    <div class="word-item">
+      <div class="word-top">
+        <div><strong>${x.w}</strong> <span class="muted">${x.p}</span></div>
+        <span class="tag">${x.lv}</span>
+      </div>
+      <div>${x.zh}</div>
+      <div class="muted">例句：${x.ex}</div>
+      <div class="word-actions">
+        <button class="secondary" onclick="speak('${x.w}',1)">🔊 发音</button>
+        <button class="secondary" onclick="speak('${x.w}',0.72)">🐢 慢速</button>
+        <button class="secondary" onclick="addWrongByWord('${x.w}')">加入错词本</button>
+      </div>
     </div>
   `).join("");
+}
+
+function addWrongByWord(word) {
+  const found = words.find(x => x.w === word);
+  if (found) addWrong(found);
+}
+window.speak = speak;
+window.addWrongByWord = addWrongByWord;
+
+function randomFrom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function nextQuiz() {
+  const src = state.wrongBook.length >= 3 ? state.wrongBook : words;
+  state.currentQuizWord = randomFrom(src);
+  document.getElementById("spellInput").value = "";
+  document.getElementById("quizPrompt").textContent = `释义：${state.currentQuizWord.zh} ｜ 例句：${state.currentQuizWord.ex}`;
   document.getElementById("quizResult").textContent = "Ready.";
 }
 
-function gradeQuiz() {
-  let score = 0;
-  currentQuiz.forEach((q, i) => {
-    const picked = document.querySelector(`input[name="q${i}"]:checked`)?.value;
-    if (picked === q.ans) score += 1;
-  });
-  document.getElementById("quizResult").textContent = `Score: ${score}/5 ${score >= 4 ? "🎉 Great!" : "💪 Keep going!"}`;
+function checkQuiz() {
+  if (!state.currentQuizWord) {
+    nextQuiz();
+    return;
+  }
+  const input = document.getElementById("spellInput").value.trim().toLowerCase();
+  const ans = state.currentQuizWord.w.toLowerCase();
+
+  state.todayTries += 1;
+
+  if (input === ans) {
+    state.todayCorrect += 1;
+    document.getElementById("quizResult").innerHTML = `<span class="ok">✅ 正确！</span> ${state.currentQuizWord.w}`;
+    removeWrong(state.currentQuizWord.w);
+  } else {
+    document.getElementById("quizResult").innerHTML = `<span class="bad">❌ 错误</span> 正确答案：<b>${state.currentQuizWord.w}</b>`;
+    addWrong(state.currentQuizWord);
+  }
+  renderStats();
 }
 
-fillSelect("leftClause", leftClauses);
-fillSelect("conjunction", conjunctions);
-fillSelect("rightClause", rightClauses);
-buildSentence();
-renderVocab();
-renderQuiz();
+function renderStats() {
+  const acc = state.todayTries ? Math.round((state.todayCorrect / state.todayTries) * 100) : 0;
+  document.getElementById("statsBox").innerHTML = `
+    <div class="stat"><div class="muted">今日作答</div><div><b>${state.todayTries}</b></div></div>
+    <div class="stat"><div class="muted">答对数</div><div class="ok"><b>${state.todayCorrect}</b></div></div>
+    <div class="stat"><div class="muted">正确率</div><div><b>${acc}%</b></div></div>
+    <div class="stat"><div class="muted">错词本</div><div class="warn"><b>${state.wrongBook.length}</b></div></div>
+  `;
+}
 
-document.getElementById("buildBtn").addEventListener("click", buildSentence);
-document.getElementById("speakSentenceBtn").addEventListener("click", () => speak(document.getElementById("sentenceResult").textContent, 1));
-document.getElementById("speakSentenceSlowBtn").addEventListener("click", () => speak(document.getElementById("sentenceResult").textContent, 0.75));
-document.getElementById("submitQuizBtn").addEventListener("click", gradeQuiz);
-document.getElementById("regenQuizBtn").addEventListener("click", renderQuiz);
+function renderWrongBook() {
+  const box = document.getElementById("wrongList");
+  if (!state.wrongBook.length) {
+    box.innerHTML = `<div class="muted">暂无错词，继续保持 👏</div>`;
+    return;
+  }
+  box.innerHTML = state.wrongBook.map(x => `
+    <div class="wrong-item">
+      <b>${x.w}</b> <span class="muted">${x.p}</span> · ${x.zh}
+      <div class="actions" style="margin-top:6px">
+        <button class="secondary" onclick="speak('${x.w}',1)">🔊</button>
+        <button class="secondary" onclick="speak('${x.w}',0.72)">🐢</button>
+        <button class="secondary" onclick="removeWrongByWord('${x.w}')">移除</button>
+      </div>
+    </div>
+  `).join("");
+}
 
-window.speak = speak;
+function removeWrongByWord(word) {
+  removeWrong(word);
+}
+window.removeWrongByWord = removeWrongByWord;
+
+document.getElementById("searchInput").addEventListener("input", renderWords);
+document.getElementById("levelFilter").addEventListener("change", renderWords);
+document.getElementById("checkBtn").addEventListener("click", checkQuiz);
+document.getElementById("nextBtn").addEventListener("click", nextQuiz);
+document.getElementById("speakQuizBtn").addEventListener("click", () => state.currentQuizWord && speak(state.currentQuizWord.w, 1));
+document.getElementById("speakQuizSlowBtn").addEventListener("click", () => state.currentQuizWord && speak(state.currentQuizWord.w, 0.72));
+
+renderWords();
+renderStats();
+renderWrongBook();
+nextQuiz();

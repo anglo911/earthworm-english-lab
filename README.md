@@ -1,23 +1,26 @@
-# Earthworm English Lab (Static)
+# Word Sprint (Vocabulary First)
 
-A lightweight English learning website inspired by [cuixueshe/earthworm](https://github.com/cuixueshe/earthworm), built as a static site for GitHub Pages.
+A vocabulary-focused static English learning site inspired by Earthworm.
 
-## Features
+## Core features
 
-- Conjunction sentence builder
-- Vocabulary pronunciation (normal + slow)
-- 5-question random quick quiz
+- Word bank (search + level filter)
+- Pronunciation (normal + slow)
+- Spelling quiz
+- Wrong-word notebook (saved in browser localStorage)
+- Daily stats (tries / correct / accuracy)
 
 ## Run locally
 
-Open `index.html` directly in browser, or serve with any static server.
+Open `index.html` directly in your browser.
 
-## Deploy to GitHub Pages
+## GitHub Pages
 
-1. Create a GitHub repo (e.g. `earthworm-english-lab`)
-2. Push this folder content to the repo root
-3. In GitHub → Settings → Pages:
-   - Source: Deploy from a branch
-   - Branch: `main` / root
-4. Wait 1-2 minutes and open:
-   - `https://<your-username>.github.io/<repo-name>/`
+Site URL:
+
+- https://anglo911.github.io/earthworm-english-lab/
+
+## Notes
+
+- This is a static client-side site (no backend required)
+- Browser TTS support depends on device/browser

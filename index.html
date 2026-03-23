@@ -3,70 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Earthworm English Lab</title>
-    <meta name="description" content="基于 Earthworm 思路打造的英语学习站：连词造句、词汇跟读、小测验。" />
+    <title>Word Sprint · 学单词</title>
+    <meta name="description" content="以学单词为核心：发音、慢速跟读、拼写训练、错词复习。" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <header class="hero">
-      <h1>🐛 Earthworm English Lab</h1>
-      <p>把英语“练出来”：连词造句 + 词汇跟读 + 即时测验</p>
-      <div class="badge-row">
-        <span class="badge">Inspired by cuixueshe/earthworm</span>
-        <span class="badge">Static · GitHub Pages Ready</span>
-      </div>
+      <h1>📚 Word Sprint</h1>
+      <p>主打学单词：听发音 → 记词义 → 拼写过关 → 错词复习</p>
     </header>
 
     <main class="container">
       <section class="card">
-        <h2>1) 连词造句训练（Conjunction Builder）</h2>
-        <p>先选前半句，再选连词，再选后半句，拼成更自然的英语句子。</p>
-
-        <div class="grid3">
-          <label>
-            前半句
-            <select id="leftClause"></select>
-          </label>
-          <label>
-            连词
-            <select id="conjunction"></select>
-          </label>
-          <label>
-            后半句
-            <select id="rightClause"></select>
-          </label>
+        <h2>单词库</h2>
+        <div class="toolbar">
+          <input id="searchInput" placeholder="搜索单词 / 中文释义..." />
+          <select id="levelFilter">
+            <option value="all">全部难度</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+          </select>
         </div>
-
-        <div class="result" id="sentenceResult">Your sentence will appear here.</div>
-        <div class="actions">
-          <button id="buildBtn">生成句子</button>
-          <button id="speakSentenceBtn" class="secondary">🔊 朗读句子</button>
-          <button id="speakSentenceSlowBtn" class="secondary">🐢 慢速朗读</button>
-        </div>
+        <div id="wordList" class="word-list"></div>
       </section>
 
       <section class="card">
-        <h2>2) 单词区（Vocabulary + 跟读）</h2>
-        <p>点击单词听发音；慢速模式适合跟读。</p>
-        <div id="vocabList" class="vocab-list"></div>
+        <h2>拼写训练（Spelling）</h2>
+        <p id="quizPrompt" class="muted">点击“下一题”开始。</p>
+        <input id="spellInput" placeholder="输入英文单词" />
+        <div class="actions">
+          <button id="checkBtn">提交</button>
+          <button id="nextBtn" class="secondary">下一题</button>
+          <button id="speakQuizBtn" class="secondary">🔊 读题词</button>
+          <button id="speakQuizSlowBtn" class="secondary">🐢 慢速</button>
+        </div>
+        <div id="quizResult" class="result">Ready.</div>
       </section>
 
       <section class="card">
-        <h2>3) 5题小测（Quick Quiz）</h2>
-        <p>每次随机5题，提交后立即评分。</p>
-        <div id="quizBox"></div>
-        <div class="actions">
-          <button id="submitQuizBtn">提交评分</button>
-          <button id="regenQuizBtn" class="secondary">换一组题</button>
-        </div>
-        <div class="result" id="quizResult">Ready.</div>
+        <h2>今日复习统计</h2>
+        <div class="stats" id="statsBox"></div>
+        <h3>错词本（本地保存）</h3>
+        <div id="wrongList" class="wrong-list"></div>
       </section>
     </main>
 
     <footer>
       <small>
-        Built for <strong>anglo911</strong> · Powered by static HTML/CSS/JS ·
-        <a href="https://github.com/cuixueshe/earthworm" target="_blank" rel="noreferrer">Earthworm Source</a>
+        for anglo911 · vocabulary-first edition ·
+        <a href="https://github.com/anglo911/earthworm-english-lab" target="_blank" rel="noreferrer">GitHub Repo</a>
       </small>
     </footer>
 
